@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<LodelPlugin>
+    <title>IdRef</title>
+    <description>Search IdRef</description>
+    <sql>0</sql>
+    <hookType>class</hookType>
+    <triggers>preview,postview</triggers>
+    <parameters>
+        <param name="userrights" title="User Rights" type="select" allowedValues="30,40,128" defaultValue="30" required="true"/>
+    </parameters>
+</LodelPlugin>

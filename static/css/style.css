@@ -1,0 +1,67 @@
+div.idref-widget {
+	width:100%;
+	margin:1rem 0;
+}
+div.idref-block {
+	border: solid 1px lightgrey;
+	padding: .5rem;
+	margin-bottom: .5rem;
+	background-color: white
+}
+
+div.idref-block-title {
+	font-weight: bold;
+	font-size: larger;
+	color: #0096b7;
+	margin-bottom: .5rem;
+}
+div.idref-search-all {
+	margin-top: .5rem;
+	text-align:right;
+}
+button.idref {
+	background-color: #fff;
+	padding: .5rem;
+	color: #3a383f;
+	font-size: larger;
+	border-radius: .25rem;
+	cursor: pointer;
+	border: solid 1px #bfbfc3;
+	margin-left: .5rem;
+}
+button.idref:hover {
+	background-color:#eee;
+}
+button.idref.small {
+	padding: .3rem .5rem;
+	font-size: unset;
+}
+button.idref.blue {
+	background-color: #1f75cb;
+	color: white;
+	border: solid 1px #133f69;
+}
+button.idref.blue:hover {
+	background-color:#1068bf;
+}
+div.idref-block-content label {
+	margin-right: .3rem;
+}
+span.idref-saved {
+	display: inline-block;
+	margin-left: 5px;
+	background-color: #52d139;
+	padding: .125rem .375rem;
+	border-radius: .75rem;
+}
+span.idref-not-saved {
+	display: inline-block;
+	margin-left: 5px;
+	background-color: orange;
+	padding: .125rem .375rem;
+	border-radius: .75rem;
+}
+.idref-field {
+	padding: 4px 2px 2px 4px;
+}
+
