@@ -3,6 +3,10 @@ class IdRef extends Plugins
 {
     public function enableAction(&$context, &$error)
     {
+        if(!parent::_checkRights(LEVEL_ADMIN)) { return; }
+        $result = $this->installIdRef( $context );
+        echo $result ;
+        return "_ajax" ;
     }
 
     public function disableAction(&$context, &$error)
@@ -133,6 +137,28 @@ class IdRef extends Plugins
             $offset += strlen($insert);
         }
         View::$page = $page;
+    }
+
+
+    private function installIdRef($context)
+    {
+        $idref_field_defined = DAO::getDao('tablefields')->find('name="idref" AND class="entities_auteurs"', 'id');
+        if ($idref_field_defined !== NULL) {
+	    return "IdRef field exists";
+	}
+        $localcontext = $context;
+        $localcontext['name'] = 'idref';
+        $localcontext['title'] = 'IdRef';
+        $localcontext['class'] = 'entities_auteurs';
+        $localcontext['type'] = 'tinytext';
+        $localcontext['gui_user_complexity'] = 16;
+        $localcontext['cond'] = '*';
+        $localcontext['edition'] = 'editable';
+        $localcontext['otx'] = '//tei:idno[@type=\'IDREF\']';
+        if(true !== ($err = Controller::addObject('tablefields', $localcontext)))
+                trigger_error(print_r($err,true), E_USER_ERROR);
+
+        return "Successful installation" ;
     }
 }
 
