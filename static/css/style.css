@@ -19,6 +19,11 @@ div.idref-search-all {
 	margin-top: .5rem;
 	text-align:right;
 }
+span.idref-num-found {
+	margin-right:.5rem;
+	margin-bottom: .5rem;
+	display: inline-block;
+}
 button.idref {
 	background-color: #fff;
 	padding: .5rem;
@@ -27,7 +32,6 @@ button.idref {
 	border-radius: .25rem;
 	cursor: pointer;
 	border: solid 1px #bfbfc3;
-	margin-left: .5rem;
 }
 button.idref:hover {
 	background-color:#eee;
@@ -46,6 +50,7 @@ button.idref.blue:hover {
 }
 div.idref-block-content label {
 	margin-right: .3rem;
+	font-size: larger;
 }
 span.idref-saved {
 	display: inline-block;

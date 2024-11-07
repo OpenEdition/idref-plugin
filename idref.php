@@ -53,10 +53,10 @@ class IdRef extends Plugins
             }
         }
 
-        $idref_widget .= '<div class="idref-search-all"><button class="idref" id="idref-search-all">Search for all persons in IdRef</button></div>';
+        $idref_widget .= '<div class="idref-search-all"><button class="idref" id="idref-search-all">'.getlodeltextcontents('idref_find_all', 'edition').'</button></div>';
         $idref_widget .= '</div><!-- .idref-widget -->';
         $idref_widget .= '<input type="hidden" name="documentid" value="' . $documentid . '"/>';
-        $idref_widget .= '<button type="submit" class="idref blue">Save</button>';
+        $idref_widget .= '<button type="submit" class="idref blue">'.getlodeltextcontents('idref_save', 'edition').'</button>';
         $idref_widget .= '</form></div>';
         return $idref_widget;
     }
@@ -69,7 +69,7 @@ class IdRef extends Plugins
         $idref_section .= '<input id="idref-' . $personid . '" style="max-width:70px;' . $color . '" type="text" name="idrefs[]" value="' . $idref . '" data-surname="' . $surname . '" data-forename="' . $forename . '" data-personid="' . $personid . '" class="idref-field" / >';
         if (!empty($idref))
         {
-            $idref_section .= '<span id="idref-status-' . $personid . '" class="idref-status idref-saved">IdRef saved</span>';
+            $idref_section .= '<span id="idref-status-' . $personid . '" class="idref-status idref-saved">'.getlodeltextcontents('idref_idref_saved', 'edition').'</span>';
         }
         else
         {
@@ -118,6 +118,7 @@ class IdRef extends Plugins
 	    <script src="' . $static . 'js/idref.js"></script>
 	    <script src="' . $static . 'js/form.js"></script>
 	    <script src="' . $static . 'js/subModal.js"></script>
+	    <script>'.self::jsTranslations().'</script>
 	    ';
     }
 
@@ -139,6 +140,18 @@ class IdRef extends Plugins
         View::$page = $page;
     }
 
+    private function jsTranslations()
+    {
+        $js = 'var translations = {';
+        $js .= '"idref_saved" : "'.getlodeltextcontents('idref_idref_saved', 'edition').'",';
+        $js .= '"idref_not_saved" : "'.getlodeltextcontents('idref_idref_not_saved', 'edition').'",';
+        $js .= '"find_all" : "'.getlodeltextcontents('idref_find_all', 'edition').'",';
+        $js .= '"idref_found" : "'.getlodeltextcontents('idref_idref_found', 'edition').'",';
+        $js .= '"search_for_x_persons" : "'.getlodeltextcontents('idref_search_for_x_persons', 'edition').'",';
+        $js .= '"check_in_idref" : "'.getlodeltextcontents('idref_check_in_idref', 'edition').'"';
+        $js .= '};';
+	return $js;
+    }
 
     private function installIdRef($context)
     {

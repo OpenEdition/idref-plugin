@@ -17,7 +17,7 @@ $(document).ready(function() {
             $(".js").remove();
 
             $.get("https://www.idref.fr/Sru/Solr?wt=json&q=persname_t:(" + encodeURIComponent($(this).attr("data-surname")) + " AND " + encodeURIComponent($(this).attr("data-forename")) + ")&fl=ppn_z", function(data) {
-                $(idref_num_found).html(data.response.numFound + " IdRef found");
+                $(idref_num_found).html(data.response.numFound + " " + translations['idref_found']);
                 if (data.response.numFound == 1) {
                     if ($(idref_field).val() != "" && $(idref_field).val() != data.response.docs[0].ppn_z) {
                         if (confirm("IdRef already set for " + forename + " " + surname + ": \n" + $(idref_field).val() + "\nis different from IdRef found:\n" + data.response.docs[0].ppn_z + " \nReplace with this IdRef?")) {
@@ -28,12 +28,12 @@ $(document).ready(function() {
                     }
                     if (insert_idref) {
                         $(idref_field).val(data.response.docs[0].ppn_z);
-                        $(idref_status).html("IdRef not saved");
+                        $(idref_status).html(translations['idref_not_saved']);
                         $(idref_status).addClass("idref-not-saved");
                     }
-                    $(idref_num_found).after("<span class=\"js\"><button id=\"" + idref_check + "\" class=\"idref-check idref small\" data-personid=" + personid + ">Check in IdRef</button></span>");
+                    $(idref_num_found).after("<span class=\"js\"><button id=\"" + idref_check + "\" class=\"idref-check idref small\" data-personid=" + personid + ">" + translations['check_in_idref'] + "</button></span>");
                 } else {
-                    $(idref_num_found).after("<span class=\"js\"><button id=\"" + idref_check + "\" class=\"idref-check idref small\" data-personid=" + personid + ">Search for " + data.response.numFound + " persons in IdRef</button></span>");
+                    $(idref_num_found).after("<span class=\"js\"><button id=\"" + idref_check + "\" class=\"idref-check idref small\" data-personid=" + personid + ">" + translations['search_for_x_persons'].replace(/%s/g, data.response.numFound) + "</button></span>");
                 }
             });
         });
@@ -46,3 +46,13 @@ $(document).ready(function() {
     });
 
 });
+
+//145         $js = 'var translations = {';
+//146         $js .= '"idref_saved" : "'.getlodeltextcontents('idref_idref_saved', 'edition').'",';
+//147         $js .= '"idref_not_saved" : "'.getlodeltextcontents('idref_idref_not_saved', 'edition').'",';
+//148         $js .= '"find_all" : "'.getlodeltextcontents('idref_find_all', 'edition').'",';
+//149         $js .= '"idref_found" : "'.getlodeltextcontents('idref_idref_found', 'edition').'",';
+//150         $js .= '"search_for_x_persons" : "'.getlodeltextcontents('idref_search_for_x_persons', 'edition').'",';
+//151         $js .= '"check_in_idref" : "'.getlodeltextcontents('idref_check_in_idref', 'edition').'"';
+//152         $js .= '};';
+

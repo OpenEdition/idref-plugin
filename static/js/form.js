@@ -75,7 +75,7 @@ function traiteResultat(e) {
     if (data["g"] != null) {
         var field_id = "idref-" + window.from_person_id;
         var idref_status = "#idref-status-" + window.from_person_id;
-        $(idref_status).html("IdRef not saved");
+        $(idref_status).html(translations['idref_not_saved']);
         $(idref_status).addClass("idref-not-saved");
         document.getElementById(field_id).value = data['b'];
         hidePopWin(null);
