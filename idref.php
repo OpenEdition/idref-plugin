@@ -4,7 +4,8 @@ class IdRef extends Plugins
     public function enableAction(&$context, &$error)
     {
         if(!parent::_checkRights(LEVEL_ADMIN)) { return; }
-        $result = $this->installIdRef( $context );
+        $result = $this->installIdRef($context);
+	$this->addTranslations();
         echo $result ;
         return "_ajax" ;
     }
@@ -156,7 +157,8 @@ class IdRef extends Plugins
     private function installIdRef($context)
     {
         $idref_field_defined = DAO::getDao('tablefields')->find('name="idref" AND class="entities_auteurs"', 'id');
-        if ($idref_field_defined !== NULL) {
+        if ($idref_field_defined !== NULL)
+	{
 	    return "IdRef field exists";
 	}
         $localcontext = $context;
@@ -168,11 +170,79 @@ class IdRef extends Plugins
         $localcontext['cond'] = '*';
         $localcontext['edition'] = 'editable';
         $localcontext['otx'] = '//tei:idno[@type=\'IDREF\']';
-        if(true !== ($err = Controller::addObject('tablefields', $localcontext)))
+        if (true !== ($err = Controller::addObject('tablefields', $localcontext)))
                 trigger_error(print_r($err,true), E_USER_ERROR);
 
         return "Successful installation" ;
     }
-}
 
+    private function addTranslations()
+    {
+        global $db;
+        $lodeladmin_languages = $db->getAll(lq("SELECT DISTINCT(lang) FROM #_MTP_translations"));
+
+        $texts = $this->getTranslations();
+        $logic = Logic::getLogic('texts');
+        $langs = array();
+        foreach ($lodeladmin_languages as $row)
+	{
+            $langs[] = $row['lang'];
+        }
+        foreach ($langs as $lang) {
+            foreach ($texts as $name => $text)
+	    {
+	        $status=$db->getOne(lq("SELECT status FROM #_MTP_texts WHERE lang='$lang' AND textgroup='edition' AND name='$name'"));
+	        if (null !== $status && "-1" !== $status) continue; // If translation is set and translation status != -1, don't overwrite value
+                $db->execute(lq("delete FROM #_MTP_texts WHERE lang='$lang' AND textgroup='edition' AND name='$name'")); // delete old value
+                $text_to_insert = isset($text[$lang]) ? $text[$lang] : $text['en']; // If translation value is not defined for a language, use english value
+                $context = array('name' => $name, 'contents' => $text_to_insert, 'lang' => $lang, 'textgroup' => 'edition', 'status' => 2);
+                $error = null;
+                $logic->editAction($context, $error);
+                if ($error)
+                    echo "Error while importing lang ".var_export($error,true)."\n";
+            }
+        }
+    }
+
+    private function getTranslations()
+    {
+        return [
+            'idref_save' =>
+                [
+                    'fr' => 'Enregistrer',
+                    'en' => 'Save',
+                ],
+            'idref_idref_saved' =>
+                [
+                    'fr' => 'IdRef enregistré',
+                    'en' => 'IdRef saved',
+                ],
+            'idref_idref_not_saved' =>
+                [
+                    'fr' => 'IdRef non enregistré',
+                    'en' => 'IdRef not saved',
+                ],
+            'idref_find_all' =>
+                [
+                    'fr' => 'Rechercher toutes les personnes dans IdRef',
+                    'en' => 'Search for all persons in IdRef',
+                ],
+            'idref_idref_found' =>
+                [
+                    'fr' => 'IdRef trouvé(s)',
+                    'en' => 'IdRef found',
+                ],
+            'idref_search_for_x_persons' =>
+                [
+                    'fr' => 'Rechercher parmi %s personnes dans IdRef',
+                    'en' => 'Search for %s persons in IdRef',
+                ],
+            'idref_check_in_idref' =>
+                [
+                    'fr' => 'Vérifier dans IdRef',
+                    'en' => 'Check in IdRef',
+                ],
+        ];
+    }
+}
 
