@@ -17,7 +17,7 @@ $(document).ready(function() {
             $(".js").remove();
 
             $.get("https://www.idref.fr/Sru/Solr?wt=json&q=persname_t:(" + encodeURIComponent($(this).attr("data-surname")) + " AND " + encodeURIComponent($(this).attr("data-forename")) + ")&fl=ppn_z", function(data) {
-                $(idref_num_found).html(data.response.numFound + " " + translations['idref_found']);
+                $(idref_num_found).html("<span>" + data.response.numFound + " " + translations['idref_found'] + "</span>");
                 if (data.response.numFound == 1) {
                     if ($(idref_field).val() != "" && $(idref_field).val() != data.response.docs[0].ppn_z) {
                         if (confirm("IdRef already set for " + forename + " " + surname + ": \n" + $(idref_field).val() + "\nis different from IdRef found:\n" + data.response.docs[0].ppn_z + " \nReplace with this IdRef?")) {
@@ -46,13 +46,4 @@ $(document).ready(function() {
     });
 
 });
-
-//145         $js = 'var translations = {';
-//146         $js .= '"idref_saved" : "'.getlodeltextcontents('idref_idref_saved', 'edition').'",';
-//147         $js .= '"idref_not_saved" : "'.getlodeltextcontents('idref_idref_not_saved', 'edition').'",';
-//148         $js .= '"find_all" : "'.getlodeltextcontents('idref_find_all', 'edition').'",';
-//149         $js .= '"idref_found" : "'.getlodeltextcontents('idref_idref_found', 'edition').'",';
-//150         $js .= '"search_for_x_persons" : "'.getlodeltextcontents('idref_search_for_x_persons', 'edition').'",';
-//151         $js .= '"check_in_idref" : "'.getlodeltextcontents('idref_check_in_idref', 'edition').'"';
-//152         $js .= '};';
 
