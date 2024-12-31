@@ -1,6 +1,6 @@
 # IdRef Plugin for Lodel 1
 
-Search and save IdRef for persons
+Search and save IdRef for persons. 
 
 ## Features
 
@@ -9,16 +9,37 @@ Search and save IdRef for persons
 - If only one IdRef is found, it is retrieved into the IdRef field.
 - If several IdRefs are found, user can search the IdRef interface for all the people found and retrieve the correct IdRef using the "Lier la notice" button.
 
+### Optional feature
+
+- The "Report by email" feature add a button "Report missing IdRef"/"Signaler un IdRef manquant" to the widget. 
+- An alert for a missing IdRef is sent by email to a configurable destination. Use case: a documentalist with the rights to create a missing IdRef in the IdRef database.
+
+## Requirements
+
+- Lodel 1 
+- PHP > 7.4
+
+## Installation
+
+- git clone repository in `LODEL_ROOT_DIRECTORY/share/plugins/custom/idref` (:warning: The plugin directory MUST be named `idref`)
+- To activate the "Report by email" feature, you need to add in `lodelconfig.php` a from and a destination email for reports:
+
+```php
+$cfg['idref_report_to_email'] = "from@example.com";
+$cfg['idref_report_from_email'] = "destination@example.com";
+```
+
 ## Plugin activation
 
 When the plugin is activated:
  - the idref field is created in the Lodel site database if necessary.
- - the translations (English, French) are defined in the Lodel administration translations (if not already done).
+ - the translations (English, French) are defined in the Lodel administration translations (if not already defined).
 
 ## Credits
 
 This plugin uses parts of :
  - https://github.com/oliviercrouzet/idplus
  - https://documentation.abes.fr/aideidrefdeveloppeur/index.html#installation
-(thanks to the contributors)     
+
+(thanks to the contributors)
 

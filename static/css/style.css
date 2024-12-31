@@ -15,9 +15,8 @@ div.idref-block-title {
 	color: #0096b7;
 	margin-bottom: .5rem;
 }
-div.idref-search-all {
-	margin-top: .5rem;
-	text-align:right;
+div.idref-search-all, div.report_issue {
+	margin-top: 1rem;
 }
 span.idref-num-found > span {
 	margin-right:.5rem;
@@ -35,6 +34,18 @@ button.idref {
 }
 button.idref:hover {
 	background-color:#eee;
+}
+button.info {
+	background-color:#17a2b8;
+	color: white;
+}
+button.info:hover {
+	background-color:#138496;
+}
+button.info.disabled{
+	background-color:#eee;
+	color: #666;
+	cursor:auto;
 }
 button.idref.small {
 	padding: .3rem .5rem;
@@ -69,4 +80,6 @@ span.idref-not-saved {
 .idref-field {
 	padding: 4px 2px 2px 4px;
 }
-
+hr.idref {
+	margin-top: 1rem;
+}

@@ -20,7 +20,9 @@ class IdRef extends Plugins
 
     public function postview(&$context)
     {
-        $pluginrights = isset($this->_config['userrights']['value']) ? $this->_config['userrights']['value'] : 30;
+        $context['idref_report_to_email'] = C::get('idref_report_to_email', 'cfg');
+        $context['idref_report_from_email'] = C::get('idref_report_from_email', 'cfg');
+
         if ($context['view']['tpl'] == 'edit_entities_edition' && isset($context['persons']) && $context['lodeluser']['rights'] >= $pluginrights)
         {
             self::insertToPage("/<\/head>/", self::jsCssDeclaration($context) , true);
@@ -30,6 +32,7 @@ class IdRef extends Plugins
 
     private static function insertIdRefWidget($context)
     {
+
         $persons = $context['persons'];
         $site = $context['site'];
         $documentid = $context['iddocument'];
@@ -58,7 +61,57 @@ class IdRef extends Plugins
         $idref_widget .= '</div><!-- .idref-widget -->';
         $idref_widget .= '<input type="hidden" name="documentid" value="' . $documentid . '"/>';
         $idref_widget .= '<button type="submit" class="idref blue">'.getlodeltextcontents('idref_save', 'edition').'</button>';
-        $idref_widget .= '</form></div>';
+        $idref_widget .= '</form>';
+	if (false !== $context['idref_report_to_email'] && false !== $context['idref_report_from_email'] ){
+            $idref_widget .= '<hr class="idref"/><div class="report_issue"><button class="idref info" id="idref-report">'.getlodeltextcontents('idref_report_issue', 'edition').'</button></div>';
+            $idref_widget .= '
+	    <script>
+                $("#idref-report").on({
+                    click: function() {
+                        $.confirm({
+                            useBootstrap: false,
+                            boxWidth: "500px",
+                            title: "'.getlodeltextcontents('idref_report_issue_confirm_title', 'edition').'",
+                            content: "'.getlodeltextcontents('idref_report_issue_confirm_content', 'edition').'",
+                            buttons: {
+                                cancel: {
+                                    action: function() {},
+                                    text: "'.getlodeltextcontents('idref_report_issue_confirm_no', 'edition').'",
+                                    keys: ["esc"]
+                                },
+                                confirm: {
+                                    text: "'.getlodeltextcontents('idref_report_issue_confirm_yes', 'edition').'",
+                                    btnClass: "btn-blue",
+                                    keys: ["enter"],
+                                    action: function() {
+                                        $.post(
+                                            "index.php?do=_idref_report", {
+                                                id: "'.$context["id"].'",
+                                                site: "'.$context["site"].'"
+                                            },
+                                            function(data, status) {
+                                                $("#idref-report").off("click");
+                                                $("#idref-report").addClass("disabled");
+                                                $("#idref-report").text("'.getlodeltextcontents('idref_report_issue_disabled', 'edition').'");
+                                                $.alert({
+                                                    escapeKey: "ok",
+                                                    title: "'.getlodeltextcontents('idref_report_issue_confirm_thankyou', 'edition').'",
+                                                    content: data,
+                                                    useBootstrap: false,
+                                                    boxWidth: "500px"
+                                                });
+                                            }
+                                        );
+                                    }
+                                }
+                            }
+                        });
+                    },
+                });
+            </script>
+            ';
+	}
+        $idref_widget .= '</div>';
         return $idref_widget;
     }
     private function idrefSection($idref, $surname, $forename, $personid)
@@ -109,13 +162,55 @@ class IdRef extends Plugins
         return "_ajax";
     }
 
+    public function reportAction(&$context, &$errors)
+    {
+        if (empty($_POST)) {
+            echo "Invalid POST data"; die();
+        }
+        if (!preg_match("/[0-9]?/",$_POST['id'])) {
+            echo "Invalid id"; die();
+        }
+        $id = $_POST['id'];
+	$url = $context['siteinfos']['url'].'/lodel/edition/index.php?do=view&id='.$id;
+
+        $context['idref_report_to_email'] = C::get('idref_report_to_email', 'cfg');
+        $context['idref_report_from_email'] = C::get('idref_report_from_email', 'cfg');
+	if (false === $context['idref_report_to_email']) {
+            echo "idref_report_to_email missing"; die();
+        }
+	if (false === $context['idref_report_from_email']) {
+            echo "idref_report_from_email missing"; die();
+        }
+
+        if ($context['lodeluser']['adminlodel']) {
+            $user_table="#_MTP_users";
+        } else {
+            $user_table="#_TP_users";
+        }
+        global $db;
+        $get_email = $db->getAll(lq('SELECT email FROM '.$user_table.' where username="'.$context['lodeluser']['name'].'"'));
+        $user_email = $get_email[0]['email'];
+
+        $subject = "Missing Idref: ".$url;
+        $body = "Missing Idref: ".$url."\nfrom: ". $user_email;
+        if (send_mail($context['idref_report_to_email'], $body, $subject, $context['idref_report_from_email'], "Lodel IdRef Plugin", [], false, false, false)) {
+            echo getlodeltextcontents('idref_report_issue_msg_ok', 'edition');
+        } else {
+            echo getlodeltextcontents('idref_report_issue_msg_error', 'edition');
+        }
+            return "_ajax";
+
+    }
+
     private static function jsCssDeclaration($context)
     {
         $static = $context['shareurl'] . "/plugins/custom/idref/static/";
         return '
 	    <link rel="stylesheet" href="' . $static . 'css/style.css">
 	    <link rel="stylesheet" href="' . $static . 'css/subModal.css">
+            <link rel="stylesheet" href="' . $static . 'css/jquery-confirm/3.3.4/jquery-confirm.min.css">
 	    <script src="' . $static . 'js/jquery/3.7.1/jquery.min.js"></script>
+            <script src="' . $static . 'js/jquery-confirm/3.3.4/jquery-confirm.min.js""></script>
 	    <script src="' . $static . 'js/idref.js"></script>
 	    <script src="' . $static . 'js/form.js"></script>
 	    <script src="' . $static . 'js/subModal.js"></script>
@@ -241,6 +336,52 @@ class IdRef extends Plugins
                 [
                     'fr' => 'Vérifier dans IdRef',
                     'en' => 'Check in IdRef',
+                ],
+            'idref_report_issue' =>
+                [
+                    'fr' => 'Signaler un IdRef manquant',
+                    'en' => 'Report missing IdRef',
+                ],
+            'idref_report_issue_disabled' =>
+                [
+                    'fr' => 'Signalement déjà effectué',
+                    'en' => 'Missing IdRef already reported',
+                ],
+
+            'idref_report_issue_msg_ok' =>
+                [
+                    'fr' => 'Votre signalement a bien été envoyé',
+                    'en' => 'Your report has been sent',
+                ],
+            'idref_report_issue_msg_error' =>
+                [
+                    'fr' => 'Erreur lors de l\'envoi du signalement',
+                    'en' => 'Error in sending the report',
+                ],
+            'idref_report_issue_confirm_title' =>
+                [
+                    'fr' => 'Confirmez !',
+                    'en' => 'Confirm!',
+                ],
+            'idref_report_issue_confirm_content' =>
+                [
+                    'fr' => 'Voulez-vous vraiment signaler un IdRef manquant pour ce document ? <br>Cette action enverra un mail à notre documentaliste pour la création de la notice IdRef.',
+                    'en' => 'Do you really want to report a missing IdRef for this document? <br>This action will send an email to our documentalist to create the IdRef record.',
+                ],
+            'idref_report_issue_confirm_no' =>
+                [
+                    'fr' => 'non',
+                    'en' => 'no',
+                ],
+            'idref_report_issue_confirm_yes' =>
+                [
+                    'fr' => 'oui',
+                    'en' => 'yes',
+                ],
+            'idref_report_issue_confirm_thankyou' =>
+                [
+                    'fr' => 'Merci !',
+                    'en' => 'Thank you!',
                 ],
         ];
     }
