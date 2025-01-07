@@ -1,18 +1,21 @@
 # IdRef Plugin for Lodel 1
 
-Search and save IdRef for persons. 
+This plugin lets you search for and save IdRef identifiers for persons.
 
 ## Features
 
 - Add a widget on entities edition form
-- The widget allows a search for an IdRef in the IdRef database for all persons linked to the document.
-- If only one IdRef is found, it is retrieved into the IdRef field.
-- If several IdRefs are found, user can search the IdRef interface for all the people found and retrieve the correct IdRef using the "Lier la notice" button.
+
+  - The widget allows a search for an IdRef in the IdRef database for all persons linked to the document.
+  - If only one IdRef is found, it is retrieved into the IdRef field.
+  - If several IdRefs are found, user can search the IdRef interface for all the people found and retrieve the correct IdRef using the "Lier la notice" button.
 
 ### Optional feature
 
-- The "Report by email" feature add a button "Report missing IdRef"/"Signaler un IdRef manquant" to the widget. 
-- An alert for a missing IdRef is sent by email to a configurable destination. Use case: a documentalist with the rights to create a missing IdRef in the IdRef database.
+- The "Report by email" 
+
+  - This feature add a button "Report missing IdRef"/"Signaler un IdRef manquant" to the widget. 
+  - An alert for a missing IdRef is sent by email to a configurable destination. Use case: a documentalist with the rights to create a missing IdRef in the IdRef database.
 
 ## Requirements
 
@@ -32,8 +35,9 @@ $cfg['idref_report_from_email'] = "destination@example.com";
 ## Plugin activation
 
 When the plugin is activated:
- - the idref field is created in the Lodel site database if necessary.
- - the translations (English, French) are defined in the Lodel administration translations (if not already defined).
+
+- the `idref` field is created in the Lodel site database (table `entities_auteurs`) if it doesn't already exist.
+- the translations (English, French) are defined in the Lodel administration translations (if not already defined).
 
 ## Credits
 
