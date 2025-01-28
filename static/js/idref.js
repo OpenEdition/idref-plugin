@@ -5,8 +5,11 @@ $(document).ready(function() {
         initPopUp();
         $.each($(".idref-field"), function() {
             var personid = $(this).attr("data-personid");
-            var surname = $(this).attr("data-surname");
-            var forename = $(this).attr("data-forename");
+            var surname = $(this).attr("data-surname").replace(/\s\s+/g, ' ');
+            var forename = $(this).attr("data-forename").replace(/\s\s+/g, ' ');
+            var name = surname + ' ' + forename;
+            var name_array = name.split(" ");
+            var name_solr_query = name_array.join(' AND ');
             var idref_num_found = "#idref-num-found-" + $(this).attr("data-personid");
             var idref_field = "#idref-" + $(this).attr("data-personid");
             var idref_status = "#idref-status-" + $(this).attr("data-personid");
@@ -16,7 +19,7 @@ $(document).ready(function() {
             $(idref_num_found).html();
             $(".js").remove();
 
-            $.get("https://www.idref.fr/Sru/Solr?wt=json&q=persname_t:(" + encodeURIComponent($(this).attr("data-surname")) + " AND " + encodeURIComponent($(this).attr("data-forename")) + ")&fl=ppn_z", function(data) {
+            $.get("https://www.idref.fr/Sru/Solr?wt=json&q=persname_t:(" + encodeURIComponent(name_solr_query) + ")&fl=ppn_z", function(data) {
                 $(idref_num_found).html("<span>" + data.response.numFound + " " + translations['idref_found'] + "</span>");
                 if (data.response.numFound == 1) {
                     if ($(idref_field).val() != "" && $(idref_field).val() != data.response.docs[0].ppn_z) {
