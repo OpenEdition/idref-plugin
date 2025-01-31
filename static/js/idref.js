@@ -50,13 +50,16 @@ $(document).ready(function() {
     });
 
     // IdRef validation
-    $( "#idref-form" ).on( "submit", function( event ) {
+    $( "#idref-form,#edit_ent" ).on( "submit", function( event ) {
         var idrefs_invalid = false;
         let idrefRegex = /^[0-9]{8}[0-9X]{1}$/;
         $(".idref-field").each(function(field) {
             if (!idrefRegex.test($(this).val())) {
                $(this).addClass("invalid-idref");
                alert("Invalid idref");
+               $('html, body').animate({
+                   scrollTop: $(this).offset().top
+               }, 500);
                idrefs_invalid = true;
             }
         });
