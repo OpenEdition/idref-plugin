@@ -83,3 +83,7 @@ span.idref-not-saved {
 hr.idref {
 	margin-top: 1rem;
 }
+.invalid-idref {
+	background-color:red;
+	color:white;
+}
