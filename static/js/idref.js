@@ -50,28 +50,28 @@ $(document).ready(function() {
     });
 
     // IdRef validation
-    $( "#idref-form,#edit_ent" ).on( "submit", function( event ) {
-        var idrefs_invalid = false;
-        let idrefRegex = /^[0-9]{8}[0-9X]{1}$/;
-        $(".idref-field").each(function(field) {
-            if (!idrefRegex.test($(this).val())) {
-               $(this).addClass("invalid-idref");
-               alert("Invalid idref");
-               $('html, body').animate({
-                   scrollTop: $(this).offset().top
-               }, 500);
-               idrefs_invalid = true;
-            }
-        });
-        if ( idrefs_invalid !== true ) {
-          return;
-        }
-        event.preventDefault();
-    });
-    
-    $(".idref-field").change(function(field) {
-       $(this).removeClass("invalid-idref");
-    });
-
+//    $( "#idref-form,#edit_ent" ).on( "submit", function( event ) {
+//        var first_invalid_idref = false;
+//        let idref_regex = /^[0-9]{8}[0-9X]{1}$|^$/;
+//        $(".idref-field").each(function(field) {
+//            if (!idref_regex.test($(this).val())) {
+//               $(this).addClass("invalid-idref");
+//               first_invalid_idref = (first_invalid_idref === false) ? $(this) : first_invalid_idref;
+//            }
+//        });
+//        if ( first_invalid_idref === false ) {
+//          return;
+//        }
+//        alert("Invalid idref");
+//        $('html, body').animate({
+//            scrollTop: first_invalid_idref.offset().top
+//        }, 500);
+//        event.preventDefault();
+//    }); 
+//    
+//    $(".idref-field").change(function(field) {
+//       $(this).removeClass("invalid-idref");
+//    });
+//
 });
 

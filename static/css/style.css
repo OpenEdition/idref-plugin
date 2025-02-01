@@ -36,11 +36,11 @@ button.idref:hover {
 	background-color:#eee;
 }
 button.info {
-	background-color:#17a2b8;
+	background-color:orangered;
 	color: white;
 }
 button.info:hover {
-	background-color:#138496;
+	background-color:red;
 }
 button.info.disabled{
 	background-color:#eee;

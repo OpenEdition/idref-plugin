@@ -66,6 +66,7 @@ class IdRef extends Plugins
             $idref_widget .= '<hr class="idref"/><div class="report_issue"><button class="idref info" id="idref-report">'.getlodeltextcontents('idref_report_issue', 'edition').'</button></div>';
             $idref_widget .= '
 	    <script>
+            $(document).ready(function() {
                 $("#idref-report").on({
                     click: function() {
                         $.confirm({
@@ -108,6 +109,43 @@ class IdRef extends Plugins
                         });
                     },
                 });
+
+
+                // IdRef validation
+                $( "#idref-form,#edit_ent" ).on( "submit", function( event ) {
+                    var first_invalid_idref = false;
+                    let idref_regex = /^[0-9]{8}[0-9X]{1}$|^$/;
+                    $(".idref-field").each(function(field) {
+                        if (!idref_regex.test($(this).val())) {
+                           $(this).addClass("invalid-idref");
+                           first_invalid_idref = (first_invalid_idref === false) ? $(this) : first_invalid_idref;
+                        }
+                    });
+                    if ( first_invalid_idref === false ) {
+                      return;
+                    }
+                    $.alert({
+                        useBootstrap: false,
+                        boxWidth: "500px",
+                        scrollToPreviousElement: false,
+                        title: "'.getlodeltextcontents('idref_invalid_title', 'edition').'",
+                        content: "'.getlodeltextcontents('idref_invalid', 'edition').'",
+                    });
+                    $("html, body").animate({
+                        scrollTop: first_invalid_idref.offset().top
+                    }, 500);
+                    event.preventDefault();
+                }); 
+                
+                $(".idref-field").change(function(field) {
+                   $(this).removeClass("invalid-idref");
+                });
+                $(".idref-field").click(function(field) {
+                   $(this).removeClass("invalid-idref");
+                });
+
+
+            });
             </script>
             ';
 	}
@@ -383,7 +421,16 @@ class IdRef extends Plugins
                     'fr' => 'Merci !',
                     'en' => 'Thank you!',
                 ],
+            'idref_invalid_title' =>
+                [
+                    'fr' => 'Un ou plusieurs IdRef sont invalides',
+                    'en' => 'One or more IdRef are invalid',
+                ],
+            'idref_invalid' =>
+                [
+                    'fr' => 'Le format de l\'IdRef doit être : 8 chiffres suivis d\'un chiffre ou d\'un \'X\'.',
+                    'en' => 'The format of the IdRef must be: 8 digits followed by a digit or an \'X\'.',
+                ],
         ];
     }
 }
-
