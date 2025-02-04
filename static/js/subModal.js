@@ -76,39 +76,6 @@ function getViewportWidth() {
 	if (document.body) return document.body.clientWidth; 
 }
 
-/**
- * Gets the real scroll top
- */
-function getScrollTop() {
-	if (self.pageYOffset) // all except Explorer
-	{
-		return self.pageYOffset;
-	}
-	else if (document.documentElement && document.documentElement.scrollTop)
-		// Explorer 6 Strict
-	{
-		return document.documentElement.scrollTop;
-	}
-	else if (document.body) // all other Explorers
-	{
-		return document.body.scrollTop;
-	}
-}
-function getScrollLeft() {
-	if (self.pageXOffset) // all except Explorer
-	{
-		return self.pageXOffset;
-	}
-	else if (document.documentElement && document.documentElement.scrollLeft)
-		// Explorer 6 Strict
-	{
-		return document.documentElement.scrollLeft;
-	}
-	else if (document.body) // all other Explorers
-	{
-		return document.body.scrollLeft;
-	}
-}
 
 /**
  * Initializes popup code on load.	
@@ -185,64 +152,29 @@ function showPopWin(url, width, height, returnFunc, showCloseBox) {
 	disableTabIndexes();
 	gPopupMask.style.display = "block";
 	gPopupContainer.style.display = "block";
-	// calculate where to place the window on screen
-	centerPopWin(width, height);
-	
-	var titleBarHeight = parseInt(document.getElementById("popupTitleBar").offsetHeight, 10);
 
+        centerPopWin();	
 
-	gPopupContainer.style.width = width + "px";
-	gPopupContainer.style.height = (height+titleBarHeight) + "px";
-	
-	setMaskSize();
-
-	// need to set the width of the iframe to the title bar width because of the dropshadow
-	// some oddness was occuring and causing the frame to poke outside the border in IE6
-	gPopFrame.style.width = parseInt(document.getElementById("popupTitleBar").offsetWidth, 10) + "px";
-	gPopFrame.style.height = (height) + "px";
-	
-	// set the url
-	//gPopFrame.src = url;
-	
 	gReturnFunc = returnFunc;
-	// for IE
-	if (gHideSelects == true) {
-		hideSelectBoxes();
-	}
-	
-	//window.setTimeout("setPopTitle();", 6000);
 }
-//addEvent(window, "load", initPopUp);
 //
 var gi = 0;
 function centerPopWin(width, height) {
-	if (gPopupIsShown == true) {
-		if (width == null || isNaN(width)) {
-			width = gPopupContainer.offsetWidth;
-		}
-		if (height == null) {
-			height = gPopupContainer.offsetHeight;
-		}
-		
-		//var theBody = document.documentElement;
-		var theBody = document.getElementsByTagName("BODY")[0];
-		//theBody.style.overflow = "hidden";
-		var scTop = parseInt(getScrollTop(),10);
-		var scLeft = parseInt(theBody.scrollLeft,10);
-	
+
 		setMaskSize();
-		
-		//window.status = gPopupMask.style.top + " " + gPopupMask.style.left + " " + gi++;
-		
-		var titleBarHeight = parseInt(document.getElementById("popupTitleBar").offsetHeight, 10);
-		
 		var fullHeight = getViewportHeight();
 		var fullWidth = getViewportWidth();
 		
-		gPopupContainer.style.top = (scTop + ((fullHeight - (height+titleBarHeight)) / 2)) + "px";
-		gPopupContainer.style.left =  (scLeft + ((fullWidth - width) / 2)) + "px";
-		//alert(fullWidth + " " + width + " " + gPopupContainer.style.left);
-	}
+		var gPopupTop = 20;
+		var gPopupLeft = 50;
+		gPopupContainer.style.top = "20px";
+		gPopupContainer.style.left = "50px";
+ 
+                gPopupContainer.style.width = (fullWidth-100) + "px";
+                gPopFrame.style.width = (fullWidth-100) + "px";
+                gPopupContainer.style.height = (fullHeight-20) + "px";
+                gPopFrame.style.height = (fullHeight-100) + "px";
+
 }
 addEvent(window, "resize", centerPopWin);
 addEvent(window, "scroll", centerPopWin);

@@ -112,7 +112,7 @@ class IdRef extends Plugins
 
 
                 // IdRef validation
-                $( "#idref-form,#edit_ent" ).on( "submit", function( event ) {
+                $( "#idref-form,#edit_ent,#actionentity" ).on( "submit", function( event ) {
                     var first_invalid_idref = false;
                     let idref_regex = /^[0-9]{8}[0-9X]{1}$|^$/;
                     $(".idref-field").each(function(field) {
