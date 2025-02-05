@@ -301,7 +301,7 @@ class IdRef extends Plugins
         $localcontext['type'] = 'tinytext';
         $localcontext['gui_user_complexity'] = 16;
         $localcontext['cond'] = '*';
-        $localcontext['edition'] = 'editable';
+        $localcontext['edition'] = 'display';
         $localcontext['otx'] = '//tei:idno[@type=\'IDREF\']';
         if (true !== ($err = Controller::addObject('tablefields', $localcontext)))
                 trigger_error(print_r($err,true), E_USER_ERROR);
