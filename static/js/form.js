@@ -30,8 +30,7 @@ var serializer = {
     }
 };
 
-function envoiClient(index1, index1Value, person_id) {
-
+function envoiClient(index1, index1Value, person_id, zones) {
     index1Value = index1Value.replace(/'/g, "\\\'");
     if (initClient() == 0) {};
     oFrame = document.getElementById("popupFrame");
@@ -42,7 +41,7 @@ function envoiClient(index1, index1Value, person_id) {
         idrefinit = false;
     }
     try {
-        eval('oFrame.contentWindow.postMessage(serializer.stringify({Index1:\'' + index1 + '\',Index1Value:\'' + index1Value + '\',fromApp:\'Lodel\',AutoClick:\'true\',End:\'true\'}), "*"); ');
+        eval('oFrame.contentWindow.postMessage(serializer.stringify({Index1:\'' + index1 + '\',Index1Value:\'' + index1Value + '\',Index2:\'\',Index2Value:\'\',Filtre1:\'\',Filtre2:\'\','+zones+',fromApp:\'Lodel\',AutoClick:\'true\',End:\'true\'}), "*"); ');
         window.from_person_id = person_id;
     } catch (e) {
         alert("oFrame.contentWindow Failed? " + e);

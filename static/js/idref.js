@@ -45,33 +45,9 @@ $(document).ready(function() {
     $(document).on("click", ".idref-check", function(e) {
         e.preventDefault();
         var idref_id = "#idref-" + $(this).attr("data-personid");
-        envoiClient('Nom de personne', $(idref_id).attr("data-forename") + ' ' + $(idref_id).attr("data-surname"), $(this).attr("data-personid"));
-        return false;
+	var unimarc = 'z200_a:\''+$(idref_id).attr("data-surname")+'\',z200_b:\''+$(idref_id).attr("data-forename")+'\'';
+        envoiClient('Nom de personne', $(idref_id).attr("data-surname") + ' ' + $(idref_id).attr("data-forename"), $(this).attr("data-personid"),unimarc);return false;
     });
 
-    // IdRef validation
-//    $( "#idref-form,#edit_ent" ).on( "submit", function( event ) {
-//        var first_invalid_idref = false;
-//        let idref_regex = /^[0-9]{8}[0-9X]{1}$|^$/;
-//        $(".idref-field").each(function(field) {
-//            if (!idref_regex.test($(this).val())) {
-//               $(this).addClass("invalid-idref");
-//               first_invalid_idref = (first_invalid_idref === false) ? $(this) : first_invalid_idref;
-//            }
-//        });
-//        if ( first_invalid_idref === false ) {
-//          return;
-//        }
-//        alert("Invalid idref");
-//        $('html, body').animate({
-//            scrollTop: first_invalid_idref.offset().top
-//        }, 500);
-//        event.preventDefault();
-//    }); 
-//    
-//    $(".idref-field").change(function(field) {
-//       $(this).removeClass("invalid-idref");
-//    });
-//
 });
 
