@@ -45,7 +45,10 @@ $(document).ready(function() {
     $(document).on("click", ".idref-check", function(e) {
         e.preventDefault();
         var idref_id = "#idref-" + $(this).attr("data-personid");
-	var unimarc = 'z200_a:\''+$(idref_id).attr("data-surname")+'\',z200_b:\''+$(idref_id).attr("data-forename")+'\'';
+	var unimarc = 'z200_a:\''+$(idref_id).attr("data-surname")+'\'';
+	unimarc += ',z200_b:\''+$(idref_id).attr("data-forename")+'\'';
+	unimarc += ',z810_a:\''+$(idref_id).attr("data-documenturl")+'\'';
+	unimarc += ',z810_b:\''+$(idref_id).attr("data-description")+'\'';
         envoiClient('Nom de personne', $(idref_id).attr("data-surname") + ' ' + $(idref_id).attr("data-forename"), $(this).attr("data-personid"),unimarc);return false;
     });
 

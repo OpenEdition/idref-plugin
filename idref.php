@@ -36,6 +36,7 @@ class IdRef extends Plugins
         $persons = $context['persons'];
         $site = $context['site'];
         $documentid = $context['iddocument'];
+        $documenturl = $context['permanent_link'];
 
         global $db;
 
@@ -53,7 +54,8 @@ class IdRef extends Plugins
                 $surname = $author['data']['nomfamille'];
                 $person_id = $author['data']['idperson'];
                 $idref = $author['data']['idref'];
-                $idref_widget .= self::idrefSection($idref, $surname, $forename, $person_id);
+                $description = preg_replace('/(\s\s*|&#39;)/', ' ', htmlspecialchars(html_entity_decode(strip_tags($author['data']['description'])), ENT_COMPAT | ENT_XML1, 'UTF-8', false));
+                $idref_widget .= self::idrefSection($idref, $surname, $forename, $person_id, $description, $documenturl);
             }
         }
 
@@ -152,13 +154,13 @@ class IdRef extends Plugins
         $idref_widget .= '</div>';
         return $idref_widget;
     }
-    private function idrefSection($idref, $surname, $forename, $personid)
+    private function idrefSection($idref, $surname, $forename, $personid, $description, $documenturl)
     {
         $idref_section = '<div class="idref-block"><div class="idref-block-title">' . $forename . ' ' . $surname . '</div>';
         $idref_section .= '<input type="hidden" name="personids[]" value="' . $personid . '" />';
         $idref_section .= '<div class="idref-block-content">';
         $idref_section .= '<label for="idref-' . $personid . '">IdRef</label>';
-        $idref_section .= '<input id="idref-' . $personid . '" style="max-width:70px;' . $color . '" type="text" name="idrefs[]" value="' . $idref . '" data-surname="' . $surname . '" data-forename="' . $forename . '" data-personid="' . $personid . '" class="idref-field" / >';
+        $idref_section .= '<input id="idref-' . $personid . '" style="max-width:70px;' . $color . '" type="text" name="idrefs[]" value="' . $idref . '" data-surname="' . $surname . '" data-forename="' . $forename . '" data-personid="' . $personid . '" data-description="' . $description . '" data-documenturl="' . $documenturl . '" class="idref-field" / >';
         if (!empty($idref))
         {
             $idref_section .= '<span id="idref-status-' . $personid . '" class="idref-status idref-saved">'.getlodeltextcontents('idref_idref_saved', 'edition').'</span>';
