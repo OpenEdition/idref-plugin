@@ -23,7 +23,7 @@ class IdRef extends Plugins
         $context['idref_report_to_email'] = C::get('idref_report_to_email', 'cfg');
         $context['idref_report_from_email'] = C::get('idref_report_from_email', 'cfg');
 
-        if ($context['view']['tpl'] == 'edit_entities_edition' && isset($context['persons']) && $context['lodeluser']['rights'] >= $pluginrights)
+        if ($context['view']['tpl'] == 'edit_entities_edition' && isset($context['persons']))
         {
             self::insertToPage("/<\/head>/", self::jsCssDeclaration($context) , true);
             self::insertToPage("/<\/div>\s*<\/div>\s*<\/body>/s", self::insertIdRefWidget($context) , true);
@@ -50,10 +50,10 @@ class IdRef extends Plugins
             if (self::getPersonType($persontype) == 'auteuroeuvre') continue;
             foreach ($authors as $author)
             {
-                $forename = $author['data']['prenom'];
-                $surname = $author['data']['nomfamille'];
-                $person_id = $author['data']['idperson'];
-                $idref = $author['data']['idref'];
+                $forename = $author['data']['prenom'] ?? null;
+                $surname = $author['data']['nomfamille'] ?? null;
+                $person_id = $author['data']['idperson'] ?? null;
+                $idref = $author['data']['idref'] ?? null;
                 $description = preg_replace('/(\s\s*|&#39;)/', ' ', htmlspecialchars(html_entity_decode(strip_tags($author['data']['description'])), ENT_COMPAT | ENT_XML1, 'UTF-8', false));
                 $idref_widget .= self::idrefSection($idref, $surname, $forename, $person_id, $description, $documenturl);
             }
@@ -63,7 +63,46 @@ class IdRef extends Plugins
         $idref_widget .= '</div><!-- .idref-widget -->';
         $idref_widget .= '<input type="hidden" name="documentid" value="' . $documentid . '"/>';
         $idref_widget .= '<button type="submit" class="idref blue">'.getlodeltextcontents('idref_save', 'edition').'</button>';
-        $idref_widget .= '</form>';
+	$idref_widget .= '</form>';
+        $idref_widget .= '
+	    <script>
+	    $(document).ready(function() {
+                // IdRef validation
+                $( "#idref-form,#edit_ent,#actionentity" ).on( "submit", function( event ) {
+                    var first_invalid_idref = false;
+                    let idref_regex = /^[0-9]{8}[0-9X]{1}$|^$/;
+                    $(".idref-field").each(function(field) {
+                        if (!idref_regex.test($(this).val())) {
+                           $(this).addClass("invalid-idref");
+                           first_invalid_idref = (first_invalid_idref === false) ? $(this) : first_invalid_idref;
+                        }
+                    });
+                    if ( first_invalid_idref === false ) {
+                      return;
+                    }
+                    $.alert({
+                        useBootstrap: false,
+                        boxWidth: "500px",
+                        scrollToPreviousElement: false,
+                        title: "'.getlodeltextcontents('idref_invalid_title', 'edition').'",
+                        content: "'.getlodeltextcontents('idref_invalid', 'edition').'",
+                    });
+                    $("html, body").animate({
+                        scrollTop: first_invalid_idref.offset().top
+                    }, 500);
+                    event.preventDefault();
+                }); 
+                
+                $(".idref-field").change(function(field) {
+                   $(this).removeClass("invalid-idref");
+                });
+                $(".idref-field").click(function(field) {
+                   $(this).removeClass("invalid-idref");
+                });
+            });
+            </script>
+        ';
+
 	if (false !== $context['idref_report_to_email'] && false !== $context['idref_report_from_email'] ){
             $idref_widget .= '<hr class="idref"/><div class="report_issue"><button class="idref info" id="idref-report">'.getlodeltextcontents('idref_report_issue', 'edition').'</button></div>';
             $idref_widget .= '
@@ -112,41 +151,6 @@ class IdRef extends Plugins
                     },
                 });
 
-
-                // IdRef validation
-                $( "#idref-form,#edit_ent,#actionentity" ).on( "submit", function( event ) {
-                    var first_invalid_idref = false;
-                    let idref_regex = /^[0-9]{8}[0-9X]{1}$|^$/;
-                    $(".idref-field").each(function(field) {
-                        if (!idref_regex.test($(this).val())) {
-                           $(this).addClass("invalid-idref");
-                           first_invalid_idref = (first_invalid_idref === false) ? $(this) : first_invalid_idref;
-                        }
-                    });
-                    if ( first_invalid_idref === false ) {
-                      return;
-                    }
-                    $.alert({
-                        useBootstrap: false,
-                        boxWidth: "500px",
-                        scrollToPreviousElement: false,
-                        title: "'.getlodeltextcontents('idref_invalid_title', 'edition').'",
-                        content: "'.getlodeltextcontents('idref_invalid', 'edition').'",
-                    });
-                    $("html, body").animate({
-                        scrollTop: first_invalid_idref.offset().top
-                    }, 500);
-                    event.preventDefault();
-                }); 
-                
-                $(".idref-field").change(function(field) {
-                   $(this).removeClass("invalid-idref");
-                });
-                $(".idref-field").click(function(field) {
-                   $(this).removeClass("invalid-idref");
-                });
-
-
             });
             </script>
             ';
@@ -154,13 +158,13 @@ class IdRef extends Plugins
         $idref_widget .= '</div>';
         return $idref_widget;
     }
-    private function idrefSection($idref, $surname, $forename, $personid, $description, $documenturl)
+    private static function idrefSection($idref, $surname, $forename, $personid, $description, $documenturl)
     {
         $idref_section = '<div class="idref-block"><div class="idref-block-title">' . $forename . ' ' . $surname . '</div>';
         $idref_section .= '<input type="hidden" name="personids[]" value="' . $personid . '" />';
         $idref_section .= '<div class="idref-block-content">';
         $idref_section .= '<label for="idref-' . $personid . '">IdRef</label>';
-        $idref_section .= '<input id="idref-' . $personid . '" style="max-width:70px;' . $color . '" type="text" name="idrefs[]" value="' . $idref . '" data-surname="' . $surname . '" data-forename="' . $forename . '" data-personid="' . $personid . '" data-description="' . $description . '" data-documenturl="' . $documenturl . '" class="idref-field" / >';
+        $idref_section .= '<input id="idref-' . $personid . '" style="max-width:70px;" type="text" name="idrefs[]" value="' . $idref . '" data-surname="' . $surname . '" data-forename="' . $forename . '" data-personid="' . $personid . '" data-description="' . $description . '" data-documenturl="' . $documenturl . '" class="idref-field" / >';
         if (!empty($idref))
         {
             $idref_section .= '<span id="idref-status-' . $personid . '" class="idref-status idref-saved">'.getlodeltextcontents('idref_idref_saved', 'edition').'</span>';
@@ -174,7 +178,7 @@ class IdRef extends Plugins
         return $idref_section;
     }
 
-    private function getPersonType($idtype)
+    private static function getPersonType($idtype)
     {
         global $db;
         $q = "select type from persontypes where id='$idtype'";
@@ -276,7 +280,7 @@ class IdRef extends Plugins
         View::$page = $page;
     }
 
-    private function jsTranslations()
+    private static function jsTranslations()
     {
         $js = 'var translations = {';
         $js .= '"idref_saved" : "'.getlodeltextcontents('idref_idref_saved', 'edition').'",';
