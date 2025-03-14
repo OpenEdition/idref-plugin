@@ -41,9 +41,13 @@ When the plugin is activated:
 
 ## Credits
 
+Authors: Jean-François Rivière, Émilie Cornillaux
+
 This plugin uses parts of :
  - https://github.com/oliviercrouzet/idplus
  - https://documentation.abes.fr/aideidrefdeveloppeur/index.html#installation
 
 (thanks to the contributors)
+
+This plugin was created as part of the [Quameo project](https://www.ouvrirlascience.fr/quameo/), funded by the [National Fund for Open Science](https://www.ouvrirlascience.fr/).
 
