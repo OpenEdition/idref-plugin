@@ -9,6 +9,7 @@ This plugin lets you search for and save IdRef identifiers for persons.
   - The widget allows a search for an IdRef in the IdRef database for all persons linked to the document.
   - If only one IdRef is found, it is retrieved into the IdRef field.
   - If several IdRefs are found, user can search the IdRef interface for all the people found and retrieve the correct IdRef using the "Lier la notice" button.
+  - If no IdRef matches the author, the plugin sends data to IdRef to pre-fill the cataloging form for creating the new notice (IdRef account required).
 
 ### Optional feature
 
@@ -20,7 +21,7 @@ This plugin lets you search for and save IdRef identifiers for persons.
 ## Requirements
 
 - Lodel 1 
-- PHP > 7.4
+- PHP >= 7.4 (tested with PHP 7.4, PHP 8.2)
 
 ## Installation
 
@@ -41,7 +42,7 @@ When the plugin is activated:
 
 ## Credits
 
-Authors: Jean-François Rivière, Émilie Cornillaux
+Authors: Jean-François Rivière, Émilie Cornillaux, Olivier Crouzet
 
 This plugin uses parts of :
  - https://github.com/oliviercrouzet/idplus
