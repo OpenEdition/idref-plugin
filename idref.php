@@ -22,8 +22,7 @@ class IdRef extends Plugins
     {
         $context['idref_report_to_email'] = C::get('idref_report_to_email', 'cfg');
         $context['idref_report_from_email'] = C::get('idref_report_from_email', 'cfg');
-
-        if ($context['view']['tpl'] == 'edit_entities_edition' && isset($context['persons']))
+        if ($context['view']['tpl'] == 'edit_entities_edition' && isset($context['persons']) && ($context['type']['class'] == 'textes' || $context['type']['class'] == 'publications'))
         {
             self::insertToPage("/<\/head>/", self::jsCssDeclaration($context) , true);
             self::insertToPage("/<\/div>\s*<\/div>\s*<\/body>/s", self::insertIdRefWidget($context) , true);
