@@ -201,6 +201,13 @@ class IdRef extends Plugins
                 trigger_error("SQL ERROR :<br />" . $GLOBALS['db']->ErrorMsg() , E_USER_ERROR);
             }
         }
+        $q = "update entities set upd= NOW() where id='$documentid'";
+        $result = $db->execute(lq($q));
+        if ($result === false)
+        {
+            trigger_error("SQL ERROR :<br />" . $GLOBALS['db']->ErrorMsg() , E_USER_ERROR);
+        }
+
         header("Location: index.php?do=view&id=$documentid");
         return "_ajax";
     }
