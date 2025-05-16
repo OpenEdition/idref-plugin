@@ -53,7 +53,7 @@ class IdRef extends Plugins
                 $surname = $author['data']['nomfamille'] ?? null;
                 $person_id = $author['data']['idperson'] ?? null;
                 $idref = $author['data']['idref'] ?? null;
-                $description = preg_replace('/(\s\s*|&#39;)/', ' ', htmlspecialchars(html_entity_decode(strip_tags($author['data']['description'])), ENT_COMPAT | ENT_XML1, 'UTF-8', false));
+                $description = preg_replace('/(\s\s*|&#39;|\')/', ' ', htmlspecialchars(html_entity_decode(strip_tags($author['data']['description'])), ENT_COMPAT | ENT_XML1, 'UTF-8', false));
                 $idref_widget .= self::idrefSection($idref, $surname, $forename, $person_id, $description, $documenturl);
             }
         }
