@@ -8,6 +8,7 @@ $(document).ready(function() {
             var surname = $(this).attr("data-surname").replace(/\s\s+/g, ' ');
             var forename = $(this).attr("data-forename").replace(/\s\s+/g, ' ');
             var name = surname + ' ' + forename;
+            name = name.trim();
             var name_array = name.split(" ");
             var name_solr_query = name_array.join(' AND ');
             var idref_num_found = "#idref-num-found-" + $(this).attr("data-personid");
